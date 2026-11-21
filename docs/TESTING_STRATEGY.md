@@ -16,6 +16,8 @@ Reference server: 4 vCPU, 8 GiB RAM, SSD, Linux containers on a single host. Ref
 | Database growth | Initial allowance 2 KiB/event for heap plus indexes. At sustained 100 EPS this is about 16.5 GiB/day, 115.4 GiB for seven days. Measure relation sizes before/after and plan WAL, backup and free-space headroom separately. Use a smaller retention or ingest budget if the pilot host cannot afford this. |
 | Detection | Phase 3 worker sustains 200 events/s with the published enabled rule set. At 100 EPS, p95 commit-to-alert ≤5 s for immediately eligible matches. Report time-window closure delay separately. |
 
+These budgets describe the fleet deployment. The single-PC release is governed by [LOCAL_PROFILE.md](LOCAL_PROFILE.md): the ingestion, latency and recovery rows above do not gate it, and its per-machine budget replaces the database-growth row.
+
 ## Protocol
 
 1. Seed deterministic endpoint UUIDs, account cohorts and expected IDs. Mix successful and failed interactive/service logons, absent IPs, variable field sizes and day/night patterns. Include duplicate requests, skewed clocks and out-of-order arrivals. Generate workloads independently of server response speed and record offered versus admitted load.
