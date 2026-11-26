@@ -1,6 +1,6 @@
 # Repository and engineering standards
 
-Phase 0 contained the design under docs, a contributor guide, documentation checks and the license. Phase 1 introduces the Cargo workspace, the pinned toolchain, `crates/protocol` (event model, validation and Windows parsing) and `crates/agent-core` (SQLite spool, bookmarks, gaps and retention). Introduce each remaining runtime directory with its first working feature.
+Phase 0 contained the design under docs, a contributor guide, documentation checks and the license. Phase 1 introduces the Cargo workspace, the pinned toolchain, `crates/protocol` (event model, validation and Windows parsing), `crates/agent-core` (SQLite spool, bookmarks, gaps and retention), `crates/windows-source` (Event Log pull subscription) and `apps/agent` (collector loop). Introduce each remaining runtime directory with its first working feature.
 
 ```text
 apps/

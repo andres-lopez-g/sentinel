@@ -196,3 +196,36 @@ fn retention_keeps_daily_counts_and_audits_deletion() {
     assert_eq!(store.health().unwrap().fact_count, 1);
     assert_eq!(store.audit_count().unwrap(), 1);
 }
+
+#[test]
+fn bookmark_is_persisted_with_the_admitted_record() {
+    let db = TempDb::new();
+    let mut store = Store::open(&db.path).unwrap();
+    let received = "2026-01-10T15:04:06Z".parse::<DateTime<Utc>>().unwrap();
+    let (event, xml) = event_at(received, "1729");
+    let bookmark = "<BookmarkList>lab-1:1729</BookmarkList>";
+
+    assert_eq!(store.bookmark().unwrap(), None);
+    assert_eq!(
+        store
+            .admit_with_bookmark(&event, &xml, Some(bookmark), received)
+            .unwrap(),
+        Admission::Inserted
+    );
+    assert_eq!(store.bookmark().unwrap().as_deref(), Some(bookmark));
+
+    let mut changed = event.clone();
+    changed.user.name = Some("other".to_string());
+    assert_eq!(
+        store
+            .admit_with_bookmark(&changed, &xml, Some("other bookmark"), received)
+            .unwrap(),
+        Admission::Conflict
+    );
+    assert_eq!(store.bookmark().unwrap().as_deref(), Some(bookmark));
+
+    store
+        .begin_generation("lab-2", received + Duration::seconds(1))
+        .unwrap();
+    assert_eq!(store.bookmark().unwrap(), None);
+}

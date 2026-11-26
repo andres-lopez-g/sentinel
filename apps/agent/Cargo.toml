@@ -1,0 +1,16 @@
+[package]
+name = "sentinel-agent"
+version = "0.1.0"
+description = "Local Windows collector service entry point for Sentinel"
+license.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+chrono = { version = "0.4.45", default-features = false, features = ["std", "clock"] }
+sentinel-agent-core = { path = "../../crates/agent-core" }
+sentinel-protocol = { path = "../../crates/protocol" }
+thiserror = "2.0"
+
+[target.'cfg(windows)'.dependencies]
+sentinel-windows-source = { path = "../../crates/windows-source" }

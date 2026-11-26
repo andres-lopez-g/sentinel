@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS source_state (
     generation TEXT NOT NULL,
     last_record_id INTEGER,
     degraded_reason TEXT,
+    bookmark_xml TEXT,
     updated_at TEXT NOT NULL
 );
 
@@ -100,6 +101,7 @@ pub struct SourceState {
     pub generation: String,
     pub last_record_id: Option<u64>,
     pub degraded_reason: Option<String>,
+    pub bookmark_xml: Option<String>,
     pub updated_at: DateTime<Utc>,
 }
 
@@ -167,6 +169,18 @@ impl Store {
         raw_xml: &str,
         received_at: DateTime<Utc>,
     ) -> Result<Admission, StoreError> {
+        self.admit_with_bookmark(event, raw_xml, None, received_at)
+    }
+
+    /// Store a record and the source bookmark that produced it in one
+    /// transaction. A crash cannot leave the channel ahead of the database.
+    pub fn admit_with_bookmark(
+        &mut self,
+        event: &NormalizedEvent,
+        raw_xml: &str,
+        bookmark_xml: Option<&str>,
+        received_at: DateTime<Utc>,
+    ) -> Result<Admission, StoreError> {
         let transaction = self.connection.transaction()?;
         let (generation, record_id) = event.local_key();
         let digest = digest(event)?;
@@ -219,8 +233,8 @@ impl Store {
             ],
         )?;
         transaction.execute(
-            "INSERT INTO source_state (id, source, generation, last_record_id, updated_at)
-             VALUES (1, ?1, ?2, ?3, ?4)
+            "INSERT INTO source_state (id, source, generation, last_record_id, bookmark_xml, updated_at)
+             VALUES (1, ?1, ?2, ?3, ?4, ?5)
              ON CONFLICT(id) DO UPDATE SET
                 generation = excluded.generation,
                 last_record_id = CASE
@@ -228,11 +242,13 @@ impl Store {
                     WHEN source_state.last_record_id IS NULL THEN excluded.last_record_id
                     ELSE MAX(source_state.last_record_id, excluded.last_record_id)
                 END,
+                bookmark_xml = COALESCE(excluded.bookmark_xml, source_state.bookmark_xml),
                 updated_at = excluded.updated_at",
             params![
                 event.sentinel.source,
                 generation,
                 record_id.parse::<u64>().ok().map(|value| value as i64),
+                bookmark_xml,
                 received,
             ],
         )?;
@@ -243,7 +259,7 @@ impl Store {
     pub fn source_state(&self) -> Result<Option<SourceState>, StoreError> {
         self.connection
             .query_row(
-                "SELECT source, generation, last_record_id, degraded_reason, updated_at
+                "SELECT source, generation, last_record_id, degraded_reason, bookmark_xml, updated_at
                  FROM source_state WHERE id = 1",
                 [],
                 |row| {
@@ -252,12 +268,18 @@ impl Store {
                         generation: row.get(1)?,
                         last_record_id: row.get::<_, Option<i64>>(2)?.map(|value| value as u64),
                         degraded_reason: row.get(3)?,
-                        updated_at: parse_row_time(&row.get::<_, String>(4)?)?,
+                        bookmark_xml: row.get(4)?,
+                        updated_at: parse_row_time(&row.get::<_, String>(5)?)?,
                     })
                 },
             )
             .optional()
             .map_err(Into::into)
+    }
+
+    /// Persisted channel bookmark, used to resume after a service restart.
+    pub fn bookmark(&self) -> Result<Option<String>, StoreError> {
+        Ok(self.source_state()?.and_then(|state| state.bookmark_xml))
     }
 
     /// Start a new source generation after a stale bookmark or channel clear.
@@ -269,7 +291,7 @@ impl Store {
         let transaction = self.connection.transaction()?;
         transaction.execute(
             "UPDATE source_state SET generation = ?1, last_record_id = NULL,
-                degraded_reason = NULL, updated_at = ?2 WHERE id = 1",
+                degraded_reason = NULL, bookmark_xml = NULL, updated_at = ?2 WHERE id = 1",
             params![generation, format_time(at)],
         )?;
         audit(&transaction, at, "generation_started", generation)?;
