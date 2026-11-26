@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <Provider Name="Microsoft-Windows-Security-Auditing" />
+    <EventID>4634</EventID>
+    <TimeCreated SystemTime="2026-01-10T15:04:06Z" />
+    <EventRecordID>1732</EventRecordID>
+    <Channel>Security</Channel>
+    <Computer>lab-win-01</Computer>
+  </System>
+  <EventData>
+    <Data Name="TargetUserName">sample-user</Data>
+    <Data Name="LogonType">2</Data>
+  </EventData>
+</Event>

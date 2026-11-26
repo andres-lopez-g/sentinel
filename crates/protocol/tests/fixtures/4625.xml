@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <Provider Name="Microsoft-Windows-Security-Auditing" Guid="{54849625-5478-4994-A5BA-3E3B0328C30D}" />
+    <EventID>4625</EventID>
+    <Version>0</Version>
+    <Level>0</Level>
+    <Task>12545</Task>
+    <Opcode>0</Opcode>
+    <Keywords>0x8010000000000000</Keywords>
+    <TimeCreated SystemTime="2026-01-10T15:06:11.5000000Z" />
+    <EventRecordID>1730</EventRecordID>
+    <Correlation />
+    <Execution ProcessID="512" ThreadID="1234" />
+    <Channel>Security</Channel>
+    <Computer>lab-win-01</Computer>
+    <Security />
+  </System>
+  <EventData>
+    <Data Name="SubjectUserSid">S-1-5-18</Data>
+    <Data Name="SubjectUserName">LAB-WIN-01$</Data>
+    <Data Name="SubjectDomainName">LAB</Data>
+    <Data Name="SubjectLogonId">0x3e7</Data>
+    <Data Name="Status">0xC000006D</Data>
+    <Data Name="SubStatus">0xC0000064</Data>
+    <Data Name="TargetUserSid">-</Data>
+    <Data Name="TargetUserName">bad-user</Data>
+    <Data Name="TargetDomainName">LAB</Data>
+    <Data Name="TargetLogonId">0x0</Data>
+    <Data Name="LogonType">3</Data>
+    <Data Name="WorkstationName">LAB-WIN-01</Data>
+    <Data Name="IpAddress">-</Data>
+    <Data Name="IpPort">-</Data>
+    <Data Name="ProcessName">C:\Windows\System32\svchost.exe</Data>
+  </EventData>
+</Event>

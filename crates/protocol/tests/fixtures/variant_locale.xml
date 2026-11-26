@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+  <System>
+    <EventID>4624</EventID>
+    <Version>1</Version>
+    <TimeCreated SystemTime="2026-01-10T15:10:00Z" />
+    <EventRecordID>1731</EventRecordID>
+    <Channel>Security</Channel>
+    <Computer>lab-win-02.lab.example</Computer>
+    <Provider Name="Microsoft-Windows-Security-Auditing" Guid="{54849625-5478-4994-A5BA-3E3B0328C30D}" />
+  </System>
+  <EventData>
+    <Data Name="WorkstationName">LAB-WIN-02</Data>
+    <Data Name="TargetSid">S-1-5-21-100-200-300-1002</Data>
+    <Data Name="FutureField">a field a later Windows build may add</Data>
+    <Data Name="LogonType">10</Data>
+    <Data Name="TargetUserName">usuario</Data>
+    <Data Name="IpAddress">198.51.100.7</Data>
+    <Data Name="UnusedData" />
+  </EventData>
+  <Message>Error de inicio de sesión: se solicitó un inicio de sesión con credenciales en caché.</Message>
+</Event>
