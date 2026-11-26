@@ -1,0 +1,16 @@
+[package]
+name = "sentinel-agent-core"
+version = "0.1.0"
+description = "Local durable spool, source bookmarks and gap accounting for Sentinel"
+license.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+chrono = { version = "0.4.45", default-features = false, features = ["std", "clock", "serde"] }
+flate2 = "1.1"
+rusqlite = { version = "0.43", features = ["bundled"] }
+sentinel-protocol = { path = "../protocol" }
+serde_json = "1.0"
+sha2 = "0.10"
+thiserror = "2.0"

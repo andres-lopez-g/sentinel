@@ -2,11 +2,12 @@
 
 Sentinel is a planned, self-hosted security information and event management platform for Windows and Linux. The first release will help an analyst answer a concrete question: **which Windows logons succeeded or failed, on which endpoint, and was collection healthy at the time?**
 
-**Status · Phase 0, awaiting architecture review.** This repository contains the design. Installation instructions, binaries and measured performance will accompany working releases.
+**Status · Phase 1 in progress on the [single-host profile](docs/LOCAL_PROFILE.md).** The design remains the reviewed baseline. Two crates work today: `crates/protocol` provides the v1 event model, admission validation and the Windows 4624/4625 XML parser; `crates/agent-core` provides the WAL SQLite spool, atomic bookmarks, source generations, gap accounting and retention. Both are covered by synthetic fixtures and contract tests. Installation instructions, binaries and measured performance will accompany working releases.
 
 | Read first | Decision it supports |
 | --- | --- |
 | [Project vision](docs/PROJECT_VISION.md) | Audience, release scope and evidence for the portfolio |
+| [Local profile](docs/LOCAL_PROFILE.md) | Why the first release has one host and no server |
 | [Requirements and MVP acceptance](docs/REQUIREMENTS.md) | What a Windows pilot must demonstrate |
 | [Architecture](docs/ARCHITECTURE.md) and [technology choices](docs/TECH_STACK.md) | Trust boundaries, delivery and operating costs |
 | [Threat model](docs/THREAT_MODEL.md) | Which claims an analyst can trust |

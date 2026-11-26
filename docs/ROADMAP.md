@@ -15,6 +15,8 @@ Each phase ends with a reviewable artifact and evidence. The Windows MVP is the 
 
 **Single-PC variant.** [LOCAL_PROFILE.md](LOCAL_PROFILE.md) scopes the first release to one host with a local database and no central server. Phase 1 deliverables apply except enrollment, transport, PostgreSQL and the Compose deployment; Phase 2 keeps the same local model.
 
+**Current work.** `crates/protocol` implements the normalized event model, admission validation and the Windows 4624/4625 XML parser. `crates/agent-core` implements the WAL SQLite spool (`fact` plus compressed `raw`), atomic bookmark advancement, source generations, gap records with lower bounds and audited retention with daily rollups. Synthetic fixtures and contract tests cover both. The next increment is the Windows service adapter in `apps/agent`: the native pull subscription, channel size/horizon health and the local loopback API.
+
 ## Phase 4 experiment
 
 Aggregate five-minute windows by endpoint and account or service role. Compute failed/success counts, distinct source count, hour/day cyclical features, process frequency and destination novelty when those sources exist. Distinguish unavailable telemetry from a measured zero. Keep event IDs, window bounds, parser version and coverage with each feature row. Avoid raw usernames, IP integers and machine IDs as numeric model inputs.

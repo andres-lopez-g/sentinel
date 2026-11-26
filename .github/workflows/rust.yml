@@ -1,0 +1,22 @@
+name: Rust
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Formatting
+        shell: bash
+        run: cargo fmt --all -- --check
+      - name: Lint
+        shell: bash
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: Unit and contract tests
+        shell: bash
+        run: cargo test --workspace --all-targets
